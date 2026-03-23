@@ -356,7 +356,7 @@ export default class Scroller implements ExposedAPI {
     }
   }
 
-  private checkClick(e: TouchEvent) {
+  private checkClick(e: TouchEvent): boolean {
     const cancelable = {
       preventClick: this.animater.forceStopped,
     }
@@ -365,10 +365,20 @@ export default class Scroller implements ExposedAPI {
       this.animater.setForceStopped(false)
       return true
     }
+
     if (!cancelable.preventClick) {
+      // In case the 'disableMouse' option is set to false, 
+      //  do not convert the 'touchend' event from the triggered
+      //  'end' action hook to a click event.
+      // Otherwise, there will be two click events emitted from the scoller
+      //  as all newer browsers spawn mouse events whenever a touch event is
+      //  used. This means that a 'touchstart' + 'touchend' pair will be
+      //  accompanied by a 'mousedown' + 'mouseup' pair. The 'mousedown'
+      //  + 'mouseup' pair will be interpreted as a click event, so the 
+      //  code here must not turn the 'touchend' event also into a click event
       const _dblclick = this.options.dblclick
-      let dblclickTrigged = false
-      if (_dblclick && this.lastClickTime) {
+      let dblclickTrigged = false  
+      if (_dblclick && this.options.disableMouse && this.lastClickTime) {
         const { delay = 300 } = _dblclick as any
         if (getNow() - this.lastClickTime < delay) {
           dblclickTrigged = true
@@ -378,13 +388,11 @@ export default class Scroller implements ExposedAPI {
       if (this.options.tap) {
         tap(e, this.options.tap)
       }
-      if (
-        this.options.click &&
+      if (this.options.click && this.options.disableMouse &&
         !preventDefaultExceptionFn(
           e.target,
           this.options.preventDefaultException
-        )
-      ) {
+        )) {
         click(e)
       }
       this.lastClickTime = dblclickTrigged ? null : getNow()
