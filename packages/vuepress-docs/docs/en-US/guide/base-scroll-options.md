@@ -214,7 +214,7 @@ This implements a list of vertical clickable scrolling effects. so let's list th
 ## disableTouch
    - **Type**: `boolean`
    - **Default**: get the result by current browser environment
-   - **Usage**: When in mobile environment (supporting touch event),  `disableTouch` will be `false` and touch event will be listened. While in PC environment, `disableMouse` will be `true` and touch event will not be listened. We suggest not modifying this unless you konw what you are doing.
+   - **Usage**: When in mobile environment (supporting touch event),  `disableTouch` will be `false` and touch event will be listened. While in PC environment, `disableTouch` will be `true` and touch event will not be listened. We suggest not modifying this unless you konw what you are doing.
 
   ::: warning
   Considering some specific scenarios of the user, such as **the tablet needs to support the touch event, the tablet with mouse has to support the mouse event**, In other words, if you need to listen to the touch and mouse events at the same time, then the instantiation of BetterScroll needs to be configured as follows:
